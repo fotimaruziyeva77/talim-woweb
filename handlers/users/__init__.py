@@ -3,4 +3,5 @@ from . import admin
 from . import help
 from . import about
 from . import xabar
+from . import register
 

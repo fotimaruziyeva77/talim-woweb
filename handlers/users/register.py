@@ -1,14 +1,9 @@
 import random
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
-from aiogram.fsm.context import FSMContext
 from loader import dp, db
-from states .register import Registration
-from keyboard_buttons .default .button import user_menu
-
-# 1. Ism-familiya
-async def start_registration(message: Message, state: FSMContext):
-    await state.set_state(Registration.full_name)
-    await message.answer("Ro‘yxatdan o‘tish uchun ismingiz va familiyangizni kiriting:")
+from states.register import Registration
+from aiogram.fsm.context import FSMContext
+from keyboard_buttons.default.button import user_menu
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 
 
 @dp.message(Registration.full_name)
