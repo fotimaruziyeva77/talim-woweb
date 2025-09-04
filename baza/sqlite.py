@@ -32,8 +32,23 @@ class Database:
             full_name TEXT,
             telegram_id INTEGER UNIQUE,
             phone TEXT,
-            referrals INTEGER DEFAULT 0,     -- yangi ustun
-            invited_by INTEGER               -- kim taklif qilgan
+            referrals INTEGER DEFAULT 0,
+            invited_by INTEGER
+        );
+        """
+        self.execute(sql, commit=True)
+
+    def create_table_results(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Results(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            questions_count INTEGER,
+            correct_answers INTEGER,
+            wrong_answers INTEGER,
+            skipped_questions INTEGER,
+            status TEXT,
+            spent_time REAL
         );
         """
         self.execute(sql, commit=True)
@@ -66,7 +81,6 @@ class Database:
     def get_user(self, telegram_id):
         return self.execute("SELECT * FROM Users WHERE telegram_id=?", parameters=(telegram_id,), fetchone=True)
 
-    # 🔑 REFERAL METODLAR
     def get_referrals(self, user_id: int):
         sql = "SELECT referrals FROM Users WHERE telegram_id=?"
         result = self.execute(sql, parameters=(user_id,), fetchone=True)
@@ -76,6 +90,23 @@ class Database:
         sql = "UPDATE Users SET referrals = referrals + 1 WHERE telegram_id=?"
         self.execute(sql, parameters=(inviter_id,), commit=True)
 
+    def add_result(self, user_id, questions_count, correct_answers, wrong_answers, skipped_questions, status, spent_time):
+        sql = """
+        INSERT INTO Results(
+            user_id, questions_count, correct_answers, wrong_answers, skipped_questions, status, spent_time
+        ) VALUES (?, ?, ?, ?, ?, ?, ?);
+        """
+        parameters = (
+            user_id,
+            questions_count,
+            correct_answers,
+            wrong_answers,
+            skipped_questions,
+            status,
+            spent_time
+        )
+        self.execute(sql, parameters=parameters, commit=True)
+    
 def logger(statement):
     print(f"""
 _____________________________________________________        
